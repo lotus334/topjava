@@ -52,12 +52,10 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> dateToCalories = new HashMap<>();
 
         for (UserMeal meal : meals) {
-            dateToCalories.put(
+            dateToCalories.merge(
                     meal.getDateTime().toLocalDate(),
-                    Integer.sum(
-                            dateToCalories.getOrDefault(meal.getDateTime().toLocalDate(), 0),
-                            meal.getCalories()
-                    )
+                    meal.getCalories(),
+                    Integer::sum
             );
         }
 
@@ -95,24 +93,22 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> dateToCalories = new HashMap<>();
 
-        meals.forEach(meal -> dateToCalories.put(
-                meal.getDateTime().toLocalDate(),
-                Integer.sum(
-                        dateToCalories.getOrDefault(meal.getDateTime().toLocalDate(), 0),
-                        meal.getCalories()
+        meals.forEach(
+                meal -> dateToCalories.merge(
+                        meal.getDateTime().toLocalDate(),
+                        meal.getCalories(),
+                        Integer::sum
                 )
-        ));
+        );
 
         return meals.stream()
                 .filter(meal -> isInPeriod(meal.getDateTime().toLocalTime(), startTime, endTime))
                 .map(
-                        meal ->
-                                new UserMealWithExcess(
-                                        meal,
-                                        isExcess(dateToCalories.get(meal.getDateTime().toLocalDate()), caloriesPerDay)
-                                )
-                )
-                .collect(Collectors.toList());
+                        meal -> new UserMealWithExcess(
+                                meal,
+                                isExcess(dateToCalories.get(meal.getDateTime().toLocalDate()), caloriesPerDay)
+                        )
+                ).collect(Collectors.toList());
     }
 
     public static boolean isMealsEquals(UserMeal meal, UserMealWithExcess mealWithExcess) {
