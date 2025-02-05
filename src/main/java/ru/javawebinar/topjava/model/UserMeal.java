@@ -2,6 +2,9 @@ package ru.javawebinar.topjava.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Приём пищи без анализа переедания
+ */
 public class UserMeal {
     private final LocalDateTime dateTime;
 
