@@ -7,127 +7,118 @@ import ru.javawebinar.topjava.model.UserMealWithExcess;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserMealsUtilTest {
 
     @Test
-    public void filteredByCycles() {
-        UserMeal meal1 = new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-        UserMealWithExcess mealWith1 = UserMealsUtil.filteredByCycles(meal1, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        assert mealWith1 != null;
-        assert UserMealsUtil.isMealsEquals(meal1, mealWith1);
-
-        UserMealWithExcess mealWith1_1 = UserMealsUtil.filteredByStreams(meal1, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        assert mealWith1_1 != null;
-        assert UserMealsUtil.isMealsEquals(meal1, mealWith1);
-
-        UserMealWithExcess mealWith2 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
+    public void filteredByCycles_returnsMeals_whenMealsInPeriod() {
+        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0);
+        String description = "Завтрак";
+        int calories = 500;
+        List<UserMeal> meals = Collections.singletonList(
+                new UserMeal(dateTime, description, calories)
         );
-        assert mealWith2 == null;
-
-        UserMealWithExcess mealWith3 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
+        List<UserMealWithExcess> expected = Collections.singletonList(
+                UserMealWithExcess.builder().dateTime(dateTime).description(description).calories(calories).excess(false).build()
         );
-        assert mealWith3 == null;
-
-        UserMealWithExcess mealWith4 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith4 == null;
-
-        UserMealWithExcess mealWith5 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith5 != null;
-
-        UserMealWithExcess mealWith6 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith6 == null;
-
-        UserMealWithExcess mealWith7 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith7 == null;
-
-        // Pers
-        UserMealWithExcess mealWith8 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 11, 59), "Завтрак", 2001),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith8 != null;
-
-        UserMealWithExcess mealWith9 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 12, 0), "Завтрак", 2000),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith9 == null;
-
-        UserMealWithExcess mealWith10 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 7, 0), "Завтрак", 2000),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith10 != null;
-
-        UserMealWithExcess mealWith11 = UserMealsUtil.filteredByCycles(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 6, 59), "Завтрак", 2000),
-                LocalTime.of(7, 0),
-                LocalTime.of(12, 0),
-                2000
-        );
-        assert mealWith11 == null;
+        filteredByCyclesTest(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000, expected);
     }
 
     @Test
-    public void filteredByCyclesCheckExcess() {
-        List<UserMeal> meals = Arrays.asList(
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 7, 0), "Завтрак", 500),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 11, 59), "Обед", 1000),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 500),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 7, 0), "Завтрак", 1000),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 11, 59), "Обед", 1),
-                new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 500)
+    public void filteredByStreams_returnsMeal_whenMealsInPeriod() {
+        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0);
+        String description = "Завтрак";
+        int calories = 500;
+        List<UserMeal> meals = Collections.singletonList(
+                new UserMeal(dateTime, description, calories)
+        );
+        List<UserMealWithExcess> expected = Collections.singletonList(
+                UserMealWithExcess.builder().dateTime(dateTime).description(description).calories(calories).excess(false).build()
+        );
+        filteredByStreamsTest(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000, expected);
+    }
+
+    @Test
+    public void filteredByCycles_returnsEmptyList_whenNoMealsInPeriod() {
+        LocalDateTime dateTime = LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0);
+        String description = "Обед";
+        int calories = 1000;
+        List<UserMeal> meals = Collections.singletonList(
+                new UserMeal(dateTime, description, calories)
+        );
+        List<UserMealWithExcess> expected = Collections.emptyList();
+        filteredByCyclesTest(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000, expected);
+    }
+
+    @Test
+    public void filteredByCycles_returnsSomeMeals_whenMealsInPeriod() {
+        List<UserMeal> meals = new ArrayList<>();
+        List<UserMealWithExcess> expected = new ArrayList<>();
+
+        fillMealsAndExpectedMealsLists(meals, expected);
+
+        filteredByCyclesTest(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000, expected);
+    }
+
+    @Test
+    public void filteredByStreams_returnsSomeMeals_whenMealsInPeriod() {
+        List<UserMeal> meals = new ArrayList<>();
+        List<UserMealWithExcess> expected = new ArrayList<>();
+
+        fillMealsAndExpectedMealsLists(meals, expected);
+
+        filteredByStreamsTest(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000, expected);
+    }
+
+    private void fillMealsAndExpectedMealsLists(List<UserMeal> meals, List<UserMealWithExcess> expected) {
+        LocalDateTime dateTime1 = LocalDateTime.of(2020, Month.JANUARY, 30, 7, 0);
+        LocalDateTime dateTime2 = LocalDateTime.of(2020, Month.JANUARY, 30, 11, 59);
+        LocalDateTime dateTime3 = LocalDateTime.of(2020, Month.JANUARY, 31, 7, 0);
+        LocalDateTime dateTime4 = LocalDateTime.of(2020, Month.JANUARY, 31, 11, 59);
+        String description1 = "Завтрак";
+        String description2 = "Обед";
+        String description3 = "Завтрак";
+        String description4 = "Обед";
+        int calories1 = 500;
+        int calories2 = 1000;
+        int calories3 = 1000;
+        int calories4 = 1;
+        meals.addAll(
+                Arrays.asList(
+                        new UserMeal(dateTime1, description1, calories1),
+                        new UserMeal(dateTime2, description2, calories2),
+                        new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
+                        new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 500),
+                        new UserMeal(dateTime3, description3, calories3),
+                        new UserMeal(dateTime4, description4, calories4),
+                        new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 500)
+                )
         );
 
-        List<UserMealWithExcess> mealsByCycles = UserMealsUtil.filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        expected.addAll(
+                Stream.of(
+                        UserMealWithExcess.builder().dateTime(dateTime1).description(description1).calories(calories1).excess(false).build(),
+                        UserMealWithExcess.builder().dateTime(dateTime2).description(description2).calories(calories2).excess(false).build(),
+                        UserMealWithExcess.builder().dateTime(dateTime3).description(description3).calories(calories3).excess(true).build(),
+                        UserMealWithExcess.builder().dateTime(dateTime4).description(description4).calories(calories4).excess(true).build()
+                ).collect(Collectors.toList())
+        );
+    }
 
-        assert mealsByCycles.stream().filter(meal -> !meal.getExcess()).count() == 2;
+    private void filteredByCyclesTest(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay, List<UserMealWithExcess> expected) {
+        List<UserMealWithExcess> mealsWithExcessList = UserMealsUtil.filteredByCycles(meals, startTime, endTime, caloriesPerDay);
+        if (!Objects.equals(expected, mealsWithExcessList)) {
+            throw new AssertionError();
+        }
+    }
 
-        assert mealsByCycles.stream().filter(UserMealWithExcess::getExcess).count() == 2;
-
-        List<UserMealWithExcess> mealsByStreams = UserMealsUtil.filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-
-        assert mealsByStreams.stream().filter(meal -> !meal.getExcess()).count() == 2;
-
-        assert mealsByStreams.stream().filter(UserMealWithExcess::getExcess).count() == 2;
-
+    private void filteredByStreamsTest(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay, List<UserMealWithExcess> expected) {
+        List<UserMealWithExcess> mealsWithExcessList = UserMealsUtil.filteredByStreams(meals, startTime, endTime, caloriesPerDay);
+        if (!Objects.equals(expected, mealsWithExcessList)) {
+            throw new AssertionError();
+        }
     }
 }

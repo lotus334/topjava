@@ -1,10 +1,15 @@
 package ru.javawebinar.topjava.model;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
- * Приём пищи с анализом переедания
+ * Eating with overeating analysis
  */
+@Builder
+@Data
 public class UserMealWithExcess {
     private final LocalDateTime dateTime;
 
@@ -14,34 +19,11 @@ public class UserMealWithExcess {
 
     private final boolean excess;
 
-    public UserMealWithExcess(UserMeal userMeal, boolean excess) {
-        this.dateTime = userMeal.getDateTime();
-        this.description = userMeal.getDescription();
-        this.calories = userMeal.getCalories();
-        this.excess = excess;
-    }
-
     public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public boolean getExcess() {
-        return excess;
     }
 
     @Override
