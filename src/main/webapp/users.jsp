@@ -7,5 +7,6 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Users</h2>
+<button onclick="window.history.back()" type="button">Cancel</button>
 </body>
 </html>
