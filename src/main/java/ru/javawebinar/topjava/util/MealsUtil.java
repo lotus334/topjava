@@ -28,6 +28,10 @@ public class MealsUtil {
         mealsTo.forEach(System.out::println);
     }
 
+    public static List<MealTo> filteredByStreams(List<Meal> meals, int caloriesPerDay) {
+        return filteredByStreams(meals, null, null, caloriesPerDay);
+    }
+
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(

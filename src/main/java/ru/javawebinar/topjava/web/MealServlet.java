@@ -4,8 +4,8 @@ import com.sun.istack.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.service.MealServiceImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -29,20 +27,7 @@ public class MealServlet extends HttpServlet {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String MEAL_CREATE_UPDATE_JSP = "/mealCreateUpdate.jsp";
     public static final String MEALS_JSP = "/meals.jsp";
-
-    // TODO начитка временная
-    static {
-        List<Meal> meals = Arrays.asList(
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
-                new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
-        );
-        MealRepository.addMeals(meals);
-    }
+    MealService mealService = new MealServiceImpl(); // TODO должен быть синглтоном, хотя сейчас это не мешает
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,19 +39,19 @@ public class MealServlet extends HttpServlet {
                 break;
 
             case READ:
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MealRepository.getMeals(), LocalTime.of(7, 0), LocalTime.of(14, 0), CALORIES_PER_DAY));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(mealService.getMeals(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
                 request.getRequestDispatcher(MEALS_JSP).forward(request, response);
                 break;
 
             case UPDATE:
-                request.setAttribute("meal", MealRepository.getMealById(getId(request)));
+                request.setAttribute("meal", mealService.getMealById(getId(request)));
                 request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
                 break;
 
             case DELETE:
-                MealRepository.deleteMealById(getId(request));
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MealRepository.getMeals(), LocalTime.of(7, 0), LocalTime.of(14, 0), CALORIES_PER_DAY));
+                mealService.deleteMealById(getId(request));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(mealService.getMeals(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
                 request.getRequestDispatcher(MEALS_JSP).forward(request, response);
                 break;
@@ -84,11 +69,9 @@ public class MealServlet extends HttpServlet {
         Integer id = getId(request);
 
         if (Objects.nonNull(id)) {
-            Meal meal = new Meal(id, dateTime, description, calories);
-            MealRepository.updateMeal(meal);
+            mealService.updateMeal(id, dateTime, description, calories);
         } else {
-            Meal meal = new Meal(dateTime, description, calories);
-            MealRepository.addMeal(meal);
+            mealService.addMeal(dateTime, description, calories);
         }
 
         response.sendRedirect("index.html");
