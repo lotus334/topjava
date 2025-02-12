@@ -30,13 +30,13 @@ public class MealServlet extends HttpServlet {
     private static final MealService MEAL_SERVICE = new MealServiceImpl(); // TODO должен быть синглтоном, хотя сейчас это не мешает
 
     static {
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
-        MEAL_SERVICE.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
+        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
     }
 
     @Override
@@ -50,19 +50,19 @@ public class MealServlet extends HttpServlet {
 
             case UNKNOWN:
             case READ:
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getMeals(), CALORIES_PER_DAY));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
                 request.getRequestDispatcher(MEALS_JSP).forward(request, response);
                 break;
 
             case UPDATE:
-                request.setAttribute("meal", MEAL_SERVICE.getMealById(getId(request)));
+                request.setAttribute("meal", MEAL_SERVICE.getById(getId(request)));
                 request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
                 break;
 
             case DELETE:
-                MEAL_SERVICE.deleteMealById(getId(request));
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getMeals(), CALORIES_PER_DAY));
+                MEAL_SERVICE.deleteById(getId(request));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
                 response.sendRedirect("meals");
                 break;
@@ -80,9 +80,9 @@ public class MealServlet extends HttpServlet {
         Integer id = getId(request);
 
         if (Objects.nonNull(id)) {
-            MEAL_SERVICE.updateMeal(id, dateTime, description, calories);
+            MEAL_SERVICE.update(id, dateTime, description, calories);
         } else {
-            MEAL_SERVICE.addMeal(dateTime, description, calories);
+            MEAL_SERVICE.add(dateTime, description, calories);
         }
 
         response.sendRedirect("meals");

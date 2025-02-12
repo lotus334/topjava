@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MealService {
-    void addMeal(LocalDateTime dateTime, String description, int calories);
+    void add(LocalDateTime dateTime, String description, int calories);
 
-    void updateMeal(int id, LocalDateTime dateTime, String description, int calories);
+    void update(int id, LocalDateTime dateTime, String description, int calories);
 
-    List<Meal> getMeals();
+    List<Meal> getAll();
 
-    Meal getMealById(int id);
+    Meal getById(int id);
 
-    void deleteMealById(Integer id);
+    void deleteById(Integer id);
 }

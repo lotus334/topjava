@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 public class MealsUtil {
     public static void main(String[] args) {
         MealService mealService = new MealServiceImpl();
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
-        mealService.addMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
+        mealService.add(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
 
-        List<MealTo> mealsTo = filteredByStreams(mealService.getMeals(), LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<MealTo> mealsTo = filteredByStreams(mealService.getAll(), LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
     }
 

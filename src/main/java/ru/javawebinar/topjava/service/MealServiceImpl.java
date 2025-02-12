@@ -11,32 +11,32 @@ public class MealServiceImpl implements MealService {
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 
     @Override
-    public void addMeal(LocalDateTime dateTime, String description, int calories) {
+    public void add(LocalDateTime dateTime, String description, int calories) {
         int generatedId = ID_GENERATOR.getAndIncrement();
-        MealRepository.addMeal(
+        MealRepository.add(
                 new Meal(generatedId, dateTime, description, calories)
         );
     }
 
     @Override
-    public void updateMeal(int id, LocalDateTime dateTime, String description, int calories) {
-        MealRepository.updateMeal(
+    public void update(int id, LocalDateTime dateTime, String description, int calories) {
+        MealRepository.update(
                 new Meal(id, dateTime, description, calories)
         );
     }
 
     @Override
-    public List<Meal> getMeals() {
-        return MealRepository.getMeals();
+    public List<Meal> getAll() {
+        return MealRepository.getAll();
     }
 
     @Override
-    public Meal getMealById(int id) {
-        return MealRepository.getMealById(id);
+    public Meal getById(int id) {
+        return MealRepository.getById(id);
     }
 
     @Override
-    public void deleteMealById(Integer id) {
-        MealRepository.deleteMealById(id);
+    public void deleteById(Integer id) {
+        MealRepository.deleteById(id);
     }
 }
