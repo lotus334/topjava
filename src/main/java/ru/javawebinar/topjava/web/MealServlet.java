@@ -56,14 +56,22 @@ public class MealServlet extends HttpServlet {
                 break;
 
             case UPDATE:
-                request.setAttribute("meal", MEAL_SERVICE.getById(getId(request)));
-                request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
+                Integer id = getId(request);
+                if (id != null) {
+                    request.setAttribute("meal", MEAL_SERVICE.getById(id));
+                    request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
+                } else {
+                    response.sendRedirect("meals");
+                }
                 break;
 
             case DELETE:
-                MEAL_SERVICE.deleteById(getId(request));
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
-                request.setAttribute("formatter", FORMATTER);
+                Integer mealId = getId(request);
+                if (mealId != null) {
+                    MEAL_SERVICE.deleteById(mealId);
+                    request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
+                    request.setAttribute("formatter", FORMATTER);
+                }
                 response.sendRedirect("meals");
                 break;
         }

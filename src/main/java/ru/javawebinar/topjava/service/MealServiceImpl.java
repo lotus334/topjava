@@ -36,7 +36,7 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(int id) {
         MealRepository.deleteById(id);
     }
 }

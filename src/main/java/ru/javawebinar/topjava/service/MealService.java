@@ -14,5 +14,5 @@ public interface MealService {
 
     Meal getById(int id);
 
-    void deleteById(Integer id);
+    void deleteById(int id);
 }

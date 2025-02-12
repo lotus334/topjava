@@ -30,7 +30,7 @@ public class MealRepository {
         return ID_TO_MEAL.get(id);
     }
 
-    public static void deleteById(Integer id) {
+    public static void deleteById(int id) {
         ID_TO_MEAL.remove(id);
     }
 }
