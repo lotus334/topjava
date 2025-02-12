@@ -85,7 +85,7 @@ public class MealServlet extends HttpServlet {
             MEAL_SERVICE.addMeal(dateTime, description, calories);
         }
 
-        response.sendRedirect("index.html");
+        response.sendRedirect("meals");
     }
 
     private Integer getId(HttpServletRequest request) {
