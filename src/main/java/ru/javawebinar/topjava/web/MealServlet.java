@@ -64,7 +64,7 @@ public class MealServlet extends HttpServlet {
                 MEAL_SERVICE.deleteMealById(getId(request));
                 request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getMeals(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
-                request.getRequestDispatcher(MEALS_JSP).forward(request, response);
+                response.sendRedirect("meals");
                 break;
         }
     }
