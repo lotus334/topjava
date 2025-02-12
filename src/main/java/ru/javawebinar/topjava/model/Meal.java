@@ -12,6 +12,7 @@ import java.time.LocalTime;
 public class Meal {
 
     @Setter
+    @NonNull
     private int id;
 
     @NonNull
