@@ -4,7 +4,6 @@ import com.sun.istack.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.MealServiceImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -49,6 +48,7 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
                 break;
 
+            case UNKNOWN:
             case READ:
                 request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getMeals(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
@@ -100,15 +100,17 @@ public class MealServlet extends HttpServlet {
         READ("read"),
         UPDATE("update"),
         DELETE("delete"),
+        UNKNOWN(null),
         ;
 
         private final String name;
 
         public static ActionType fromString(@Nullable String name) {
-            if (Objects.isNull(name)) {
-                return READ;
+            ActionType foundedActionType = Arrays.stream(values()).filter(actionType -> Objects.equals(actionType.name, name)).findFirst().orElse(null);
+            if (Objects.isNull(foundedActionType)) {
+                return UNKNOWN;
             }
-            return Arrays.stream(values()).filter(actionType -> Objects.equals(actionType.name, name)).findFirst().orElse(null);
+            return foundedActionType;
         }
     }
 }
