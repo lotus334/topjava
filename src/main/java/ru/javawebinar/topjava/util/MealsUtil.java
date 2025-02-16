@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.service.MealServiceImpl;
+import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.MealRepositoryImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
     public static void main(String[] args) {
-        MealService mealService = new MealServiceImpl();
+        MealRepository mealService = new MealRepositoryImpl();
         mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
         mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
         mealService.add(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);

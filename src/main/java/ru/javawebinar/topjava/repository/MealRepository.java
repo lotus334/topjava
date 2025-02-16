@@ -2,35 +2,17 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class MealRepository {
+public interface MealRepository {
+    Meal add(LocalDateTime dateTime, String description, int calories);
 
-    private static final ConcurrentHashMap<Integer, Meal> ID_TO_MEAL = new ConcurrentHashMap<>();
+    Meal update(int id, LocalDateTime dateTime, String description, int calories);
 
-    public static void add(Meal meal) {
-        innerAdd(meal);
-    }
+    List<Meal> getAll();
 
-    private static void innerAdd(Meal meal) {
-        ID_TO_MEAL.put(meal.getId(), meal);
-    }
+    Meal getById(int id);
 
-    public static void update(Meal meal) {
-        ID_TO_MEAL.put(meal.getId(), meal);
-    }
-
-    public static List<Meal> getAll() {
-        return new ArrayList<>(ID_TO_MEAL.values());
-    }
-
-    public static Meal getById(int id) {
-        return ID_TO_MEAL.get(id);
-    }
-
-    public static void deleteById(int id) {
-        ID_TO_MEAL.remove(id);
-    }
+    void deleteById(int id);
 }

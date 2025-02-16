@@ -4,8 +4,8 @@ import com.sun.istack.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.service.MealServiceImpl;
+import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.MealRepositoryImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -27,7 +27,7 @@ public class MealServlet extends HttpServlet {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String MEAL_CREATE_UPDATE_JSP = "/mealCreateUpdate.jsp";
     public static final String MEALS_JSP = "/meals.jsp";
-    private static final MealService MEAL_SERVICE = new MealServiceImpl(); // TODO должен быть синглтоном, хотя сейчас это не мешает
+    private static final MealRepository MEAL_SERVICE = new MealRepositoryImpl(); // TODO должен быть синглтоном, хотя сейчас это не мешает
 
     static {
         MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);

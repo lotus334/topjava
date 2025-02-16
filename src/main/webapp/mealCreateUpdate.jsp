@@ -10,9 +10,9 @@
 <hr>
 <%
     Meal meal = (Meal) request.getAttribute("meal");
-    String dateTimeStr = StringUtil.getEmptyIfNull(meal == null ? null : meal.getDateTime());
-    String description = StringUtil.getEmptyIfNull(meal == null ? null : meal.getDescription());
-    String caloriesStr = StringUtil.getEmptyIfNull(meal == null ? null : meal.getCalories());
+    String dateTimeStr = StringUtil.getOrEmpty(meal == null ? null : meal.getDateTime());
+    String description = StringUtil.getOrEmpty(meal == null ? null : meal.getDescription());
+    String caloriesStr = StringUtil.getOrEmpty(meal == null ? null : meal.getCalories());
     String h2 = meal == null ? "Создание еды" : "Редактирование еды";
 %>
 <h2><%=h2%></h2>
