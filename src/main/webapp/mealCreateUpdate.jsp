@@ -10,16 +10,12 @@
 <hr>
 <%
     Meal meal = (Meal) request.getAttribute("meal");
-    String dateTimeStr = StringUtil.getOrEmpty(meal == null ? null : meal.getDateTime());
-    String description = StringUtil.getOrEmpty(meal == null ? null : meal.getDescription());
-    String caloriesStr = StringUtil.getOrEmpty(meal == null ? null : meal.getCalories());
-    String h2 = meal == null ? "Создание еды" : "Редактирование еды";
 %>
-<h2><%=h2%></h2>
+<h2><%=meal == null ? "Создание еды" : "Редактирование еды"%></h2>
 <form method="POST" action='meals'>
-    Дата/Время : <input type="datetime-local" name="dateTime" value="<%=dateTimeStr%>"/><br/>
-    Описание : <input type="text" name="description" value="<%=description%>"/><br/>
-    Калории : <input type="number" name="calories" value="<%=caloriesStr%>"/><br/>
+    Дата/Время : <input type="datetime-local" name="dateTime" value="<%=StringUtil.getOrEmpty(meal == null ? null : meal.getDateTime())%>"/><br/>
+    Описание : <input type="text" name="description" value="<%=StringUtil.getOrEmpty(meal == null ? null : meal.getDescription())%>"/><br/>
+    Калории : <input type="number" name="calories" value="<%=StringUtil.getOrEmpty(meal == null ? null : meal.getCalories())%>"/><br/>
     <input type="submit" value="Отправить"/>
 </form>
 </body>

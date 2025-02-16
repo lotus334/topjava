@@ -21,22 +21,24 @@ import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+// Servlets are singleton by 3.0v
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     public static final int CALORIES_PER_DAY = 2000;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String MEAL_CREATE_UPDATE_JSP = "/mealCreateUpdate.jsp";
     public static final String MEALS_JSP = "/meals.jsp";
-    private static final MealRepository MEAL_SERVICE = new MealRepositoryImpl(); // TODO должен быть синглтоном, хотя сейчас это не мешает
+    private static final MealRepository MEAL_REPOSITORY = new MealRepositoryImpl();
 
-    static {
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
-        MEAL_SERVICE.add(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
+    @Override
+    public void init() throws ServletException {
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
+        MEAL_REPOSITORY.add(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class MealServlet extends HttpServlet {
 
             case UNKNOWN:
             case READ:
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_REPOSITORY.getAll(), CALORIES_PER_DAY));
                 request.setAttribute("formatter", FORMATTER);
                 request.getRequestDispatcher(MEALS_JSP).forward(request, response);
                 break;
@@ -58,7 +60,7 @@ public class MealServlet extends HttpServlet {
             case UPDATE:
                 Integer id = getId(request);
                 if (id != null) {
-                    request.setAttribute("meal", MEAL_SERVICE.getById(id));
+                    request.setAttribute("meal", MEAL_REPOSITORY.getById(id));
                     request.getRequestDispatcher(MEAL_CREATE_UPDATE_JSP).forward(request, response);
                 } else {
                     response.sendRedirect("meals");
@@ -68,8 +70,8 @@ public class MealServlet extends HttpServlet {
             case DELETE:
                 Integer mealId = getId(request);
                 if (mealId != null) {
-                    MEAL_SERVICE.deleteById(mealId);
-                    request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_SERVICE.getAll(), CALORIES_PER_DAY));
+                    MEAL_REPOSITORY.deleteById(mealId);
+                    request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_REPOSITORY.getAll(), CALORIES_PER_DAY));
                     request.setAttribute("formatter", FORMATTER);
                 }
                 response.sendRedirect("meals");
@@ -88,9 +90,9 @@ public class MealServlet extends HttpServlet {
         Integer id = getId(request);
 
         if (Objects.nonNull(id)) {
-            MEAL_SERVICE.update(id, dateTime, description, calories);
+            MEAL_REPOSITORY.update(id, dateTime, description, calories);
         } else {
-            MEAL_SERVICE.add(dateTime, description, calories);
+            MEAL_REPOSITORY.add(dateTime, description, calories);
         }
 
         response.sendRedirect("meals");
